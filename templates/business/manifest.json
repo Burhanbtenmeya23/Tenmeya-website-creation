@@ -1,0 +1,221 @@
+{
+  "id": "business",
+  "name": "Business",
+  "version": "0.1.0",
+  "description": "Single-offer course/service sales page — countdown-driven hero, curriculum, testimonials, FAQ.",
+  "direction": "rtl",
+  "sections": [
+    {
+      "key": "hero",
+      "component": "Hero",
+      "label": "Hero",
+      "order": 1,
+      "required": true,
+      "fields": [
+        { "key": "eyebrow", "label": "Eyebrow", "type": "text", "required": false },
+        { "key": "headline", "label": "Headline", "type": "text", "required": true },
+        { "key": "headlineHighlight", "label": "Highlighted phrase", "type": "text", "required": false, "helpText": "A substring of the headline to render in the accent color." },
+        { "key": "subheadline", "label": "Subheadline", "type": "textarea", "required": false },
+        { "key": "media", "label": "Hero video/image", "type": "image", "required": false },
+        { "key": "countdown.enabled", "label": "Show countdown timer", "type": "boolean", "required": false },
+        { "key": "countdown.endsAt", "label": "Countdown ends at", "type": "datetime", "required": false },
+        {
+          "key": "stats",
+          "label": "Stat chips",
+          "type": { "type": "repeater", "min": 0, "fields": [
+            { "key": "icon", "label": "Icon", "type": "text", "required": true },
+            { "key": "label", "label": "Label", "type": "text", "required": true }
+          ] },
+          "required": false
+        },
+        { "key": "pricing.currency", "label": "Currency", "type": "text", "required": false },
+        { "key": "pricing.price", "label": "Price", "type": "number", "required": true },
+        { "key": "pricing.originalPrice", "label": "Original price (struck through)", "type": "number", "required": false },
+        { "key": "pricing.discountLabel", "label": "Discount label", "type": "text", "required": false, "placeholder": "Save 33%" },
+        { "key": "pricing.cta.label", "label": "Button label", "type": "text", "required": true, "placeholder": "Subscribe" },
+        { "key": "pricing.cta.href", "label": "Button link", "type": "url", "required": true }
+      ]
+    },
+    {
+      "key": "benefits",
+      "component": "Benefits",
+      "label": "What You Get",
+      "order": 2,
+      "required": false,
+      "fields": [
+        { "key": "heading", "label": "Heading", "type": "text", "required": false },
+        {
+          "key": "items",
+          "label": "Benefits",
+          "type": { "type": "repeater", "min": 1, "fields": [
+            { "key": "icon", "label": "Icon", "type": "text", "required": true },
+            { "key": "title", "label": "Title", "type": "text", "required": true },
+            { "key": "description", "label": "Description", "type": "textarea", "required": false }
+          ] },
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "curriculum",
+      "component": "Curriculum",
+      "label": "Curriculum",
+      "order": 3,
+      "required": false,
+      "fields": [
+        { "key": "heading", "label": "Heading", "type": "text", "required": false },
+        {
+          "key": "items",
+          "label": "Modules",
+          "type": { "type": "repeater", "min": 1, "fields": [
+            { "key": "title", "label": "Title", "type": "text", "required": true },
+            { "key": "description", "label": "Description", "type": "textarea", "required": false },
+            { "key": "durationLabel", "label": "Duration", "type": "text", "required": false, "placeholder": "12 min" }
+          ] },
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "instructor",
+      "component": "Instructor",
+      "label": "Instructor",
+      "order": 4,
+      "required": false,
+      "fields": [
+        { "key": "heading", "label": "Heading", "type": "text", "required": false },
+        { "key": "name", "label": "Name", "type": "text", "required": true },
+        { "key": "title", "label": "Title", "type": "text", "required": false },
+        { "key": "bio", "label": "Bio", "type": "textarea", "required": false },
+        { "key": "avatar", "label": "Photo", "type": "image", "required": false }
+      ]
+    },
+    {
+      "key": "freeLesson",
+      "component": "FreeLesson",
+      "label": "Free Lesson",
+      "order": 5,
+      "required": false,
+      "fields": [
+        { "key": "heading", "label": "Heading", "type": "text", "required": false },
+        { "key": "videoUrl", "label": "Video URL", "type": "video", "required": true },
+        { "key": "posterImage", "label": "Poster image", "type": "image", "required": false }
+      ]
+    },
+    {
+      "key": "testimonials",
+      "component": "Testimonials",
+      "label": "Testimonials",
+      "order": 6,
+      "required": false,
+      "fields": [
+        { "key": "heading", "label": "Heading", "type": "text", "required": false },
+        {
+          "key": "items",
+          "label": "Testimonials",
+          "type": { "type": "repeater", "min": 1, "fields": [
+            { "key": "quote", "label": "Quote", "type": "textarea", "required": true },
+            { "key": "authorName", "label": "Author name", "type": "text", "required": true },
+            { "key": "authorTitle", "label": "Author title", "type": "text", "required": false },
+            { "key": "authorAvatar", "label": "Author photo", "type": "image", "required": false },
+            { "key": "rating", "label": "Rating (1-5)", "type": "number", "required": false }
+          ] },
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "audience",
+      "component": "Audience",
+      "label": "Who It's For",
+      "order": 7,
+      "required": false,
+      "fields": [
+        { "key": "heading", "label": "Heading", "type": "text", "required": false },
+        {
+          "key": "items",
+          "label": "Audience items",
+          "type": { "type": "repeater", "min": 1, "fields": [
+            { "key": "icon", "label": "Icon", "type": "text", "required": false },
+            { "key": "label", "label": "Label", "type": "text", "required": true }
+          ] },
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "faq",
+      "component": "Faq",
+      "label": "FAQ",
+      "order": 8,
+      "required": false,
+      "fields": [
+        { "key": "heading", "label": "Heading", "type": "text", "required": false },
+        {
+          "key": "items",
+          "label": "Questions",
+          "type": { "type": "repeater", "min": 1, "fields": [
+            { "key": "question", "label": "Question", "type": "text", "required": true },
+            { "key": "answer", "label": "Answer", "type": "textarea", "required": true }
+          ] },
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "footer",
+      "component": "Footer",
+      "label": "Footer",
+      "order": 9,
+      "required": false,
+      "fields": [
+        { "key": "logo", "label": "Logo", "type": "image", "required": false },
+        { "key": "tagline", "label": "Tagline", "type": "text", "required": false },
+        {
+          "key": "links",
+          "label": "Links",
+          "type": { "type": "repeater", "min": 0, "fields": [
+            { "key": "label", "label": "Label", "type": "text", "required": true },
+            { "key": "href", "label": "URL", "type": "url", "required": true }
+          ] },
+          "required": false
+        },
+        {
+          "key": "socialLinks",
+          "label": "Social links",
+          "type": { "type": "repeater", "min": 0, "fields": [
+            { "key": "platform", "label": "Platform", "type": "text", "required": true },
+            { "key": "href", "label": "URL", "type": "url", "required": true }
+          ] },
+          "required": false
+        },
+        { "key": "copyrightText", "label": "Copyright text", "type": "text", "required": false }
+      ]
+    }
+  ],
+  "theme": {
+    "colors": {
+      "background": "#ffffff",
+      "foreground": "#0e1b2c",
+      "muted": "#5b6472",
+      "border": "#e5e9ea",
+      "accent": "#2dd4bf",
+      "accentSoft": "#e6fbf7",
+      "accentForeground": "#06281f",
+      "accentGradientFrom": "#5eead4",
+      "accentGradientTo": "#2dd4bf",
+      "priceBg": "#0b1420",
+      "priceForeground": "#ffffff"
+    },
+    "fontFamily": {
+      "heading": "'IBM Plex Sans Arabic', 'Geist', system-ui, sans-serif",
+      "body": "'IBM Plex Sans Arabic', 'Geist', system-ui, sans-serif"
+    },
+    "radius": "1.25rem",
+    "spacingScale": 1
+  },
+  "animations": {
+    "entrance": "fade-up",
+    "staggerMs": 80
+  }
+}

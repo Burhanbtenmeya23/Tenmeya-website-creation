@@ -1,0 +1,10 @@
+export { Hero } from "./Hero";
+export { Benefits } from "./Benefits";
+export { Curriculum } from "./Curriculum";
+export { Instructor } from "./Instructor";
+export { FreeLesson } from "./FreeLesson";
+export { Testimonials } from "./Testimonials";
+export { Audience } from "./Audience";
+export { Faq } from "./Faq";
+export { Footer } from "./Footer";
+export { StickyCtaBar } from "./StickyCtaBar";
