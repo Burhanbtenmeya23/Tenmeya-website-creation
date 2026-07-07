@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import type { InstructorContent } from "@/lib/validations/content.schema";
 
 import { TplContainer, TplHeading, TplSection } from "./_shared";
@@ -10,12 +12,15 @@ export function Instructor({ data }: { data: InstructorContent | null }) {
       <TplContainer className="flex flex-col items-center gap-4 text-center">
         {data.heading ? <TplHeading>{data.heading}</TplHeading> : null}
         {data.avatar ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={data.avatar.url}
-            alt={data.avatar.alt ?? data.name}
-            className="size-24 rounded-full object-cover"
-          />
+          <div className="relative size-24 overflow-hidden rounded-full">
+            <Image
+              src={data.avatar.url}
+              alt={data.avatar.alt ?? data.name}
+              fill
+              sizes="96px"
+              className="object-cover"
+            />
+          </div>
         ) : null}
         <p className="text-lg font-bold text-[var(--tpl-foreground)]">
           {data.name}

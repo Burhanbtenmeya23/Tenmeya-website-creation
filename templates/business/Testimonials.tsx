@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import Image from "next/image";
 
 import type { TestimonialsContent } from "@/lib/validations/content.schema";
 
@@ -36,12 +37,15 @@ export function Testimonials({ data }: { data: TestimonialsContent | null }) {
               </p>
               <div className="mt-auto flex items-center gap-2">
                 {item.authorAvatar ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={item.authorAvatar.url}
-                    alt={item.authorAvatar.alt ?? item.authorName}
-                    className="size-8 rounded-full object-cover"
-                  />
+                  <div className="relative size-8 overflow-hidden rounded-full">
+                    <Image
+                      src={item.authorAvatar.url}
+                      alt={item.authorAvatar.alt ?? item.authorName}
+                      fill
+                      sizes="32px"
+                      className="object-cover"
+                    />
+                  </div>
                 ) : null}
                 <div>
                   <p className="text-sm font-semibold text-[var(--tpl-foreground)]">

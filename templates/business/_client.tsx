@@ -2,6 +2,7 @@
 
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ChevronDown, Pause, Play } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { isVideoUrl } from "./_shared";
@@ -78,8 +79,11 @@ export function HeroMedia({ url, alt }: { url: string; alt?: string }) {
   const video = isVideoUrl(url);
 
   if (!video) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={url} alt={alt ?? ""} className="h-full w-full object-cover" />;
+    return (
+      <div className="relative h-full w-full">
+        <Image src={url} alt={alt ?? ""} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+      </div>
+    );
   }
 
   const toggle = () => {

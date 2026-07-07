@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import type { FooterContent } from "@/lib/validations/content.schema";
 
 import { TplContainer, TplIcon } from "./_shared";
@@ -9,8 +11,15 @@ export function Footer({ data }: { data: FooterContent | null }) {
     <footer className="border-t border-[var(--tpl-border)] py-10">
       <TplContainer className="flex flex-col items-center gap-4 text-center">
         {data.logo ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={data.logo.url} alt={data.logo.alt ?? ""} className="h-8" />
+          <div className="relative h-8 w-32">
+            <Image
+              src={data.logo.url}
+              alt={data.logo.alt ?? ""}
+              fill
+              sizes="128px"
+              className="object-contain"
+            />
+          </div>
         ) : null}
         {data.tagline ? (
           <p className="text-sm text-[var(--tpl-muted)]">{data.tagline}</p>
