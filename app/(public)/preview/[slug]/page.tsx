@@ -1,15 +1,22 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getCurrentUser, getCurrentProfile } from "@/lib/auth/dal";
+import { getTemplate } from "@/lib/template-engine/registry";
 import { createClient } from "@/lib/supabase/server";
+import { LandingPageContentSchema } from "@/lib/validations/content.schema";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 /**
- * Renders a draft preview. NOTE: gated to the owning creator or an admin
+ * Renders the current draft. NOTE: gated to the owning creator or an admin
  * for now, matching the current `drafts` RLS policy (owner/admin only —
  * see supabase/migrations/0001_init.sql). ARCHITECTURE.md §8 describes this
  * URL as "shareable for review before publishing," which implies anonymous
  * access; that needs a deliberate decision (e.g. an unguessable slug +
- * relaxed RLS, or a signed token) before Phase 4 ships it — not made here.
+ * relaxed RLS, or a signed token) before that's safe to ship — not made here.
  */
 export default async function PreviewLandingPage({
   params,
@@ -17,37 +24,38 @@ export default async function PreviewLandingPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [user, profile] = await Promise.all([
-    getCurrentUser(),
-    getCurrentProfile(),
-  ]);
+  const [user, profile] = await Promise.all([getCurrentUser(), getCurrentProfile()]);
 
-  if (!user) {
-    notFound();
-  }
+  if (!user) notFound();
 
   const supabase = await createClient();
-  const query = supabase
+  const { data: landingPage } = await supabase
     .from("landing_pages")
-    .select("id, name, handle, creator_id")
-    .eq("handle", slug);
+    .select("id, name, handle, creator_id, template_id")
+    .eq("handle", slug)
+    .maybeSingle();
 
-  const { data: landingPage } = await query.maybeSingle();
-
-  if (
-    !landingPage ||
-    (landingPage.creator_id !== user.id && profile?.role !== "admin")
-  ) {
+  if (!landingPage || (landingPage.creator_id !== user.id && profile?.role !== "admin")) {
     notFound();
   }
 
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-2 p-8 text-center">
-      <h1 className="text-2xl font-semibold">{landingPage.name} (preview)</h1>
-      <p className="max-w-md text-sm text-muted-foreground">
-        Draft rendering isn&apos;t built yet — that&apos;s Phase 2 of the
-        roadmap.
-      </p>
-    </div>
-  );
+  const { data: templateRow } = await supabase
+    .from("templates")
+    .select("slug")
+    .eq("id", landingPage.template_id)
+    .single();
+
+  const template = templateRow ? getTemplate(templateRow.slug) : undefined;
+  if (!template) notFound();
+
+  const { data: draft } = await supabase
+    .from("drafts")
+    .select("content")
+    .eq("landing_page_id", landingPage.id)
+    .single();
+
+  const content = LandingPageContentSchema.parse(draft?.content ?? {});
+  const { Page } = template;
+
+  return <Page content={content} />;
 }

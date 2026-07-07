@@ -17,7 +17,7 @@ export default async function BuilderPage({
 
   const { data: landingPage } = await supabase
     .from("landing_pages")
-    .select("id, name, creator_id, template_id")
+    .select("id, name, handle, status, creator_id, template_id")
     .eq("id", id)
     .single();
 
@@ -60,6 +60,8 @@ export default async function BuilderPage({
     <BuilderShell
       landingPageId={id}
       landingPageName={landingPage.name}
+      landingPageHandle={landingPage.handle}
+      isPublished={landingPage.status === "published"}
       templateSlug={templateRow!.slug}
       initialContent={initialContent}
     />

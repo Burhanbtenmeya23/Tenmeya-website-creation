@@ -1,22 +1,18 @@
-import businessManifestJson from "@/templates/business/manifest.json";
-import * as businessComponents from "@/templates/business";
+import type { ComponentType } from "react";
 
-import { TemplateManifestSchema, type TemplateManifest } from "./manifest.schema";
-import type { TemplateComponents } from "./renderer";
+import * as business from "@/templates/business";
 
-const businessManifest: TemplateManifest =
-  TemplateManifestSchema.parse(businessManifestJson);
+import type { TemplateManifest } from "./manifest.schema";
+import type { LandingPageContent } from "@/lib/validations/content.schema";
 
 export interface TemplateRegistryEntry {
   manifest: TemplateManifest;
-  components: TemplateComponents;
+  /** A template's single render entry point — see templates/business/index.tsx. */
+  Page: ComponentType<{ content: LandingPageContent }>;
 }
 
 export const templateRegistry: Record<string, TemplateRegistryEntry> = {
-  business: {
-    manifest: businessManifest,
-    components: businessComponents as unknown as TemplateComponents,
-  },
+  business: { manifest: business.manifest, Page: business.Page },
 };
 
 export function getTemplate(slug: string): TemplateRegistryEntry | undefined {
