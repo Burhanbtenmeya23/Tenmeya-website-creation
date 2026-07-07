@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { requireUser } from "@/lib/auth/dal";
+import { assertLandingPageAccess } from "@/lib/landing-pages/access";
 import { createClient } from "@/lib/supabase/server";
 import { LandingPageContentSchema } from "@/lib/validations/content.schema";
 
@@ -15,18 +16,11 @@ export type PublishResult = { error?: string; publishedAt?: string };
  * published content can't.
  */
 export async function publishLandingPage(landingPageId: string): Promise<PublishResult> {
-  const user = await requireUser();
   const supabase = await createClient();
-
-  const { data: landingPage } = await supabase
-    .from("landing_pages")
-    .select("id, creator_id, handle")
-    .eq("id", landingPageId)
-    .single();
-
-  if (!landingPage || landingPage.creator_id !== user.id) {
-    return { error: "You don't have access to this landing page." };
-  }
+  const access = await assertLandingPageAccess(supabase, landingPageId);
+  if ("error" in access) return access;
+  const { landingPage } = access;
+  const user = await requireUser();
 
   const { data: draft } = await supabase
     .from("drafts")
@@ -85,18 +79,10 @@ export async function publishLandingPage(landingPageId: string): Promise<Publish
 export type UnpublishResult = { error?: string };
 
 export async function unpublishLandingPage(landingPageId: string): Promise<UnpublishResult> {
-  const user = await requireUser();
   const supabase = await createClient();
-
-  const { data: landingPage } = await supabase
-    .from("landing_pages")
-    .select("creator_id, handle")
-    .eq("id", landingPageId)
-    .single();
-
-  if (!landingPage || landingPage.creator_id !== user.id) {
-    return { error: "You don't have access to this landing page." };
-  }
+  const access = await assertLandingPageAccess(supabase, landingPageId);
+  if ("error" in access) return access;
+  const { landingPage } = access;
 
   const { error } = await supabase
     .from("landing_pages")
@@ -107,4 +93,15 @@ export async function unpublishLandingPage(landingPageId: string): Promise<Unpub
 
   revalidatePath(`/${landingPage.handle}`);
   return {};
+}
+
+// Thin void-returning wrappers for plain <form action={...}> usage (React
+// requires form actions to return void/Promise<void>) — dashboard and admin
+// quick actions don't need the result, unlike BuilderShell's toast flow.
+export async function publishLandingPageForm(landingPageId: string) {
+  await publishLandingPage(landingPageId);
+}
+
+export async function unpublishLandingPageForm(landingPageId: string) {
+  await unpublishLandingPage(landingPageId);
 }

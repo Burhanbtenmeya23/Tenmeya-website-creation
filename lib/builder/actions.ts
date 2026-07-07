@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireUser } from "@/lib/auth/dal";
+import { assertLandingPageAccess } from "@/lib/landing-pages/access";
 import { createClient } from "@/lib/supabase/server";
 import type { LandingPageContent } from "@/lib/validations/content.schema";
 
@@ -70,19 +71,11 @@ export async function saveDraft(
   landingPageId: string,
   content: LandingPageContent,
 ): Promise<SaveDraftResult> {
-  const user = await requireUser();
   const supabase = await createClient();
+  const access = await assertLandingPageAccess(supabase, landingPageId);
+  if ("error" in access) return access;
 
-  const { data: landingPage } = await supabase
-    .from("landing_pages")
-    .select("creator_id")
-    .eq("id", landingPageId)
-    .single();
-
-  if (!landingPage || landingPage.creator_id !== user.id) {
-    return { error: "You don't have access to this landing page." };
-  }
-
+  const user = await requireUser();
   const now = new Date().toISOString();
 
   const { error } = await supabase

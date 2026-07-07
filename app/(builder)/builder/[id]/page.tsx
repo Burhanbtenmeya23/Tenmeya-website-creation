@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { BuilderShell } from "@/components/builder/BuilderShell";
-import { requireUser } from "@/lib/auth/dal";
+import { getCurrentProfile, requireUser } from "@/lib/auth/dal";
 import { getTemplate } from "@/lib/template-engine/registry";
 import { createClient } from "@/lib/supabase/server";
 import { LandingPageContentSchema } from "@/lib/validations/content.schema";
@@ -12,7 +12,7 @@ export default async function BuilderPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const user = await requireUser();
+  const [user, profile] = await Promise.all([requireUser(), getCurrentProfile()]);
   const supabase = await createClient();
 
   const { data: landingPage } = await supabase
@@ -21,7 +21,7 @@ export default async function BuilderPage({
     .eq("id", id)
     .single();
 
-  if (!landingPage || landingPage.creator_id !== user.id) {
+  if (!landingPage || (landingPage.creator_id !== user.id && profile?.role !== "admin")) {
     notFound();
   }
 

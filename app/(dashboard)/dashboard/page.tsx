@@ -4,7 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/design-system/Heading";
+import { ConfirmForm } from "@/components/admin/ConfirmForm";
 import { getCurrentUser } from "@/lib/auth/dal";
+import { deleteLandingPageForm, duplicateLandingPageForm } from "@/lib/landing-pages/actions";
+import { publishLandingPageForm, unpublishLandingPageForm } from "@/lib/publishing/actions";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
@@ -35,19 +38,52 @@ export default async function DashboardPage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {landingPages.map((page) => (
-            <Link key={page.id} href={`/builder/${page.id}`}>
-              <Card className="transition-colors hover:border-foreground/30">
-                <CardHeader className="flex flex-row items-start justify-between gap-2">
+            <Card key={page.id} className="flex flex-col">
+              <CardHeader className="flex flex-row items-start justify-between gap-2">
+                <Link href={`/builder/${page.id}`} className="hover:underline">
                   <CardTitle>{page.name}</CardTitle>
-                  <Badge variant={page.status === "published" ? "accent" : "secondary"}>
-                    {page.status}
-                  </Badge>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground">
-                  /{page.handle}
-                </CardContent>
-              </Card>
-            </Link>
+                </Link>
+                <Badge variant={page.status === "published" ? "accent" : "secondary"}>
+                  {page.status}
+                </Badge>
+              </CardHeader>
+              <CardContent className="flex flex-1 flex-col justify-between gap-4">
+                <p className="text-sm text-muted-foreground">/{page.handle}</p>
+                <div className="flex flex-wrap gap-2">
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/preview/${page.handle}`} target="_blank">
+                      Preview
+                    </Link>
+                  </Button>
+                  {page.status === "published" ? (
+                    <form action={unpublishLandingPageForm.bind(null, page.id)}>
+                      <Button type="submit" variant="outline" size="sm">
+                        Unpublish
+                      </Button>
+                    </form>
+                  ) : (
+                    <form action={publishLandingPageForm.bind(null, page.id)}>
+                      <Button type="submit" variant="outline" size="sm">
+                        Publish
+                      </Button>
+                    </form>
+                  )}
+                  <form action={duplicateLandingPageForm.bind(null, page.id)}>
+                    <Button type="submit" variant="outline" size="sm">
+                      Duplicate
+                    </Button>
+                  </form>
+                  <ConfirmForm
+                    action={deleteLandingPageForm.bind(null, page.id)}
+                    confirmMessage={`Delete "${page.name}"? This can't be undone.`}
+                  >
+                    <Button type="submit" variant="destructive" size="sm">
+                      Delete
+                    </Button>
+                  </ConfirmForm>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}

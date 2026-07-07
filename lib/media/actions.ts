@@ -1,6 +1,7 @@
 "use server";
 
 import { requireUser } from "@/lib/auth/dal";
+import { assertLandingPageAccess } from "@/lib/landing-pages/access";
 import { createClient } from "@/lib/supabase/server";
 
 export type UploadMediaState = { url?: string; error?: string };
@@ -33,16 +34,8 @@ export async function uploadMedia(
   }
 
   const supabase = await createClient();
-
-  const { data: landingPage } = await supabase
-    .from("landing_pages")
-    .select("id, creator_id")
-    .eq("id", landingPageId)
-    .single();
-
-  if (!landingPage || landingPage.creator_id !== user.id) {
-    return { error: "You don't have access to this landing page." };
-  }
+  const access = await assertLandingPageAccess(supabase, landingPageId);
+  if ("error" in access) return access;
 
   const extension = file.name.split(".").pop() || "bin";
   const path = `${user.id}/${landingPageId}/${crypto.randomUUID()}.${extension}`;

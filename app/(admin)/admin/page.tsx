@@ -1,3 +1,6 @@
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/design-system/Heading";
 import { createClient } from "@/lib/supabase/server";
@@ -15,7 +18,12 @@ export default async function AdminPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Heading as="h1">Admin</Heading>
+      <div className="flex items-center justify-between">
+        <Heading as="h1">Admin</Heading>
+        <Button asChild>
+          <Link href="/admin/pages">View all landing pages</Link>
+        </Button>
+      </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Card>
           <CardHeader>

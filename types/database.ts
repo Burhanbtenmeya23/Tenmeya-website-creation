@@ -35,6 +35,7 @@ export interface Database {
           id: string;
           role: ProfileRole;
           handle: string | null;
+          email: string | null;
           full_name: string | null;
           avatar_url: string | null;
           created_at: string;
@@ -44,6 +45,7 @@ export interface Database {
           id: string;
           role?: ProfileRole;
           handle?: string | null;
+          email?: string | null;
           full_name?: string | null;
           avatar_url?: string | null;
           created_at?: string;
