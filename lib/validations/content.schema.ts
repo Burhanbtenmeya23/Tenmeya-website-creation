@@ -37,7 +37,12 @@ const HeroSchema = z.object({
   countdown: z
     .object({
       enabled: z.boolean().default(false),
-      endsAt: z.string().datetime(),
+      // Deliberately not z.string().datetime(): this is bound to an
+      // <input type="datetime-local"> value ("YYYY-MM-DDTHH:mm", no
+      // timezone suffix), which that validator rejects. Parsed leniently
+      // via `new Date(endsAt)` at render time instead (see
+      // templates/business/_client.tsx's useCountdown).
+      endsAt: z.string().min(1),
     })
     .optional(),
   stats: z.array(StatChipSchema).default([]),
